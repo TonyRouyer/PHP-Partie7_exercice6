@@ -1,3 +1,4 @@
+<?php include 'indexController.php'; ?>
 <!DOCTYPE html>
 <html lang="fr" dir="ltr">
     <head>
@@ -26,22 +27,27 @@
     </head>
     <body>
         <?php 
-            if ( isset($_POST['civilite']) && preg_match("/Mr|Mme/", $_POST['firstname']) &&
-                 isset($_POST['lastname']) && preg_match("/^[a-zA-Z]+[-\s]?[a-z]+$/", $_POST['firstname']) &&
-                 isset($_POST['firstname']) && preg_match("/^[a-zA-Z]+[-\s]?[a-z]+$/", $_POST['firstname'])
-                 ) {?>
-            <p><?= 'bonjour ' . htmlspecialchars($_POST['civilite']) . ' ' . htmlspecialchars($_POST['lastname']) . ' ' . htmlspecialchars($_POST['firstname']) .  ', vous aller bien ?' ?></p>
-            <?php }else {?>
-                <form action="index.php" method="POST">
-                    <label for="civilite"> Civilité :
-                    <select name="civilite" id="civilite">
-                        <option value="Mr">Monsieur</option>
-                        <option value="Mme">Madame</option>
-                    </select>
-                    </label>
-                    <label for="firstname">Prénom : <input type="text" id="firstname" name="firstname" /></label>
-                    <label for="lastname">Nom : <input type="text" id="lastname" name="lastname" /></label>
-                    <input type="submit" id="sendBtn" />
-                </form><?php }?>
+        //si le formulaire est validé et qu'il n y a pas d erreurs
+        if(isset($_REQUEST['form1']) && count($formError) == 0) { ?>
+            <p><?= 'bonjour ' . $civility . ' ' . $firstname . ' ' . $lastname ?></p>
+        <?php
+        }else { ?>
+            <form action="index.php" method="POST">
+                <label for="civility"> Civilité :
+                <select name="civility" id="civility">
+                    <?php 
+                        foreach($civilityList as $civilityName => $civilityValue) { ?>
+                            <option <?= isset($_REQUEST['civility']) && $_REQUEST['civility'] == $civilityValue ? 'selected' : '' ?> value="<?= $civilityValue ?>"><?= $civilityName ?></option>
+                        <?php } ?>
+                </select>
+                </label>
+                <p><?= isset($formError['civility']) ? $formError['civility'] : '' ?></p>
+                <label for="firstname">Prénom : <input type="text" id="firstname" name="firstname" value="<?= isset($_REQUEST['firstname']) ? $_REQUEST['firstname'] : '' ?>" /></label>
+                <p><?= isset($formError['firstname']) ? $formError['firstname'] : '' ?></p>
+                <label for="lastname">Nom : <input type="text" id="lastname" name="lastname" value="<?= isset($_REQUEST['lastname']) ? $_REQUEST['lastname'] : '' ?>" /></label>
+                <p><?= isset($formError['lastname']) ? $formError['lastname'] : '' ?></p>
+                <input type="submit" id="sendBtn" name="form1" value="Validation" />
+            </form>
+        <?php } ?>
     </body>
 </html>
